@@ -3,6 +3,28 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { TouchableOpacity } from "react-native";
+import * as SecureStore from "expo-secure-store";
+import { useAuth } from "@clerk/clerk-expo";
+
+const CLERK_PUBLISHABLE_KEY = process.env.CLERK_PUBLISHABLE_KEY;
+
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (error) {
+      return null;
+    }
+  },
+  async safeToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (error) {
+      return;
+    }
+  },
+};
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -43,6 +65,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
 
   return (
     <Stack>
