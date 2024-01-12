@@ -8,6 +8,7 @@ import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
+// Cache the Clerk JWT
 const tokenCache = {
   async getToken(key: string) {
     try {
