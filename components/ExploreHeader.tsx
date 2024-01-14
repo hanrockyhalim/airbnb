@@ -1,16 +1,11 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  StatusBar,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import { useRef, useState } from "react";
+import * as Haptics from "expo-haptics";
 
 const categories = [
   {
@@ -43,9 +38,27 @@ const categories = [
   },
 ];
 
-const ExploreHeader = () => {
+interface Props {
+  onCategoryChanged: (category: string) => void;
+}
+
+const ExploreHeader = ({ onCategoryChanged }: Props) => {
+  const scrollRef = useRef<ScrollView>(null);
   const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const selectCategory = (index: number) => {
+    const selected = itemsRef.current[index];
+    setActiveIndex(index);
+    if (selected) {
+      selected.measureLayout(scrollRef.current?.getInnerViewNode(), (x, y) => {
+        scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true });
+      });
+    }
+
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onCategoryChanged(categories[index].name);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -68,17 +81,18 @@ const ExploreHeader = () => {
         </View>
 
         <ScrollView
+          ref={scrollRef}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             alignItems: "center",
-            gap: 20,
+            gap: 30,
             paddingHorizontal: 16,
           }}
         >
           {categories.map((item, index) => (
             <TouchableOpacity
-              onPress={() => setActiveIndex(index)}
+              onPress={() => selectCategory(index)}
               key={index}
               ref={(el) => (itemsRef.current[index] = el)}
               style={
