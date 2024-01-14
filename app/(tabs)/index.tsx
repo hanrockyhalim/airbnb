@@ -12,6 +12,7 @@ const Page = () => {
           header: () => <ExploreHeader />,
         }}
       />
+      {/* <ExploreHeader /> */}
       <Listings />
     </View>
   );
