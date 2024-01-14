@@ -2,14 +2,15 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   StatusBar,
 } from "react-native";
 import { Link } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView } from "react-native-gesture-handler";
+import { useRef, useState } from "react";
 
 const categories = [
   {
@@ -43,6 +44,9 @@ const categories = [
 ];
 
 const ExploreHeader = () => {
+  const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
@@ -63,7 +67,43 @@ const ExploreHeader = () => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView></ScrollView>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            alignItems: "center",
+            gap: 20,
+            paddingHorizontal: 16,
+          }}
+        >
+          {categories.map((item, index) => (
+            <TouchableOpacity
+              onPress={() => setActiveIndex(index)}
+              key={index}
+              ref={(el) => (itemsRef.current[index] = el)}
+              style={
+                activeIndex === index
+                  ? styles.categoriesBtnActive
+                  : styles.categoriesBtn
+              }
+            >
+              <MaterialIcons
+                name={item.icon as any}
+                size={24}
+                color={activeIndex === index ? "#000" : Colors.grey}
+              />
+              <Text
+                style={
+                  activeIndex === index
+                    ? styles.categoryTextActive
+                    : styles.categoryText
+                }
+              >
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -94,7 +134,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flexDirection: "row",
     gap: 10,
-    padding: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     alignItems: "center",
     width: "80%",
     borderWidth: StyleSheet.hairlineWidth,
