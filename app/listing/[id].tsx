@@ -5,8 +5,9 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Share,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { Listing } from "@/interfaces/listing";
 
 import listingsData from "@/assets/data/airbnb-listings.json";
@@ -20,6 +21,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { defaultStyles } from "@/constants/Styles";
+import { useLayoutEffect } from "react";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 300;
@@ -30,8 +32,48 @@ const Page = () => {
     (item) => item.id === id
   );
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
-
   const scrollOffset = useScrollViewOffset(scrollRef);
+
+  const navigation = useNavigation();
+  const shareListing = async () => {
+    try {
+      await Share.share({
+        title: listing.name,
+        url: listing.listing_url,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerTransparent: true,
+
+      headerBackground: () => (
+        <Animated.View style={[headerAnimatedStyle, styles.header]} />
+      ),
+      headerRight: () => (
+        <View style={styles.bar}>
+          <TouchableOpacity style={styles.roundButton} onPress={shareListing}>
+            <Ionicons name="share-outline" size={22} color={"#000"} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.roundButton}>
+            <Ionicons name="heart-outline" size={22} color={"#000"} />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft: () => (
+        <TouchableOpacity
+          style={styles.roundButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="chevron-back" size={24} color={"#000"} />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
 
   const imageAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -53,6 +95,12 @@ const Page = () => {
       ],
     };
   });
+
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollOffset.value, [0, IMG_HEIGHT / 1.5], [0, 1]),
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
