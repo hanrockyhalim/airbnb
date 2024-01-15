@@ -1,11 +1,24 @@
-import { View, Text, Dimensions, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { Listing } from "@/interfaces/listing";
 
 import listingsData from "@/assets/data/airbnb-listings.json";
 import Colors from "@/constants/Colors";
-import Animated from "react-native-reanimated";
+import Animated, {
+  SlideInDown,
+  useAnimatedRef,
+  useAnimatedStyle,
+  useScrollViewOffset,
+} from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
+import { defaultStyles } from "@/constants/Styles";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 300;
@@ -15,13 +28,24 @@ const Page = () => {
   const listing: Listing = (listingsData as any[]).find(
     (item) => item.id === id
   );
+  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+
+  const scrollOffset = useScrollViewOffset(scrollRef);
+
+  const imageAnimatedStyle = useAnimatedStyle(() => {
+    return {};
+  });
 
   return (
     <View style={styles.container}>
-      <Animated.ScrollView>
+      <Animated.ScrollView
+        ref={scrollRef}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        scrollEventThrottle={16}
+      >
         <Animated.Image
           source={{ uri: listing.xl_picture_url }}
-          style={[styles.image]}
+          style={[styles.image, imageAnimatedStyle]}
           resizeMode="cover"
         />
 
@@ -62,6 +86,39 @@ const Page = () => {
           <Text style={styles.description}>{listing.description}</Text>
         </View>
       </Animated.ScrollView>
+      <Animated.View
+        style={defaultStyles.footer}
+        entering={SlideInDown.delay(200)}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 20,
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              height: "100%",
+              paddingVertical: 20,
+            }}
+          >
+            <TouchableOpacity style={styles.footerText}>
+              <Text style={styles.footerPrice}>${listing.price} </Text>
+              <Text>night</Text>
+            </TouchableOpacity>
+            <Text style={{ height: "100%" }}>{listing.street}</Text>
+          </View>
+          <TouchableOpacity
+            style={[defaultStyles.btn, { paddingHorizontal: 20 }]}
+          >
+            <Text style={defaultStyles.btnText}>Reserve</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
     </View>
   );
 };
@@ -116,9 +173,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   footerText: {
-    height: "100%",
-    justifyContent: "center",
     flexDirection: "row",
+    justifyContent: "flex-start",
     alignItems: "center",
     gap: 4,
   },

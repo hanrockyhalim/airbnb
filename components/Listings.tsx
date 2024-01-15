@@ -23,7 +23,6 @@ const Listings = ({ listings: items, category }: Props) => {
   const listRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    console.log("RELOAD LISTING", items.length);
     setLoading(true);
 
     setTimeout(() => {
@@ -31,12 +30,11 @@ const Listings = ({ listings: items, category }: Props) => {
     }, 200);
   }, [category]);
 
-
   const filteredItems = items.filter(
     (item) =>
       item.xl_picture_url !== undefined &&
       item.xl_picture_url !== null &&
-      !item.xl_picture_url.toLowerCase().includes("image not found")
+      !item.xl_picture_url.includes("Image not found")
   );
 
   const renderRow: ListRenderItem<Listing> = ({ item }) => (
@@ -53,22 +51,30 @@ const Listings = ({ listings: items, category }: Props) => {
           >
             <Ionicons name="heart-outline" size={24} color={"#000"} />
           </TouchableOpacity>
-
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontFamily: "mon-sb", fontSize: 16 }}>
-              {item.name}
-            </Text>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ fontFamily: "mon-sb" }}>
-                {item.review_scores_rating / 20}
+          <View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text
+                style={{
+                  fontFamily: "mon-sb",
+                  fontSize: 16,
+                  maxWidth: "80%",
+                  flexWrap: "wrap",
+                }}
+              >
+                {item.name}
               </Text>
-              <Ionicons name="star" size={16} />
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ fontFamily: "mon-sb" }}>
+                  {item.review_scores_rating / 20}
+                </Text>
+                <Ionicons name="star" size={16} />
+              </View>
             </View>
-          </View>
 
-          <Text style={{ fontFamily: "mon" }}>{item.room_type}</Text>
+            <Text style={{ fontFamily: "mon" }}>{item.room_type}</Text>
+          </View>
 
           <View style={{ flexDirection: "row", gap: 4 }}>
             <Text style={{ fontFamily: "mon-sb" }}>${item.price}</Text>
