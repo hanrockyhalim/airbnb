@@ -31,6 +31,14 @@ const Listings = ({ listings: items, category }: Props) => {
     }, 200);
   }, [category]);
 
+
+  const filteredItems = items.filter(
+    (item) =>
+      item.xl_picture_url !== undefined &&
+      item.xl_picture_url !== null &&
+      !item.xl_picture_url.toLowerCase().includes("image not found")
+  );
+
   const renderRow: ListRenderItem<Listing> = ({ item }) => (
     <Link href={`/listing/${item.id}`} asChild>
       <TouchableOpacity>
@@ -39,7 +47,7 @@ const Listings = ({ listings: items, category }: Props) => {
           entering={FadeInRight}
           exiting={FadeOutLeft}
         >
-          <Image source={{ uri: item.thumbnail_url }} style={styles.image} />
+          <Image source={{ uri: item.xl_picture_url }} style={styles.image} />
           <TouchableOpacity
             style={{ position: "absolute", top: 30, right: 30 }}
           >
@@ -76,7 +84,7 @@ const Listings = ({ listings: items, category }: Props) => {
       <FlatList
         renderItem={renderRow}
         ref={listRef}
-        data={loading ? [] : items}
+        data={loading ? [] : filteredItems}
       />
     </View>
   );
