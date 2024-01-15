@@ -30,12 +30,7 @@ const Listings = ({ listings: items, category }: Props) => {
     }, 200);
   }, [category]);
 
-  const filteredItems = items.filter(
-    (item) =>
-      item.xl_picture_url !== undefined &&
-      item.xl_picture_url !== null &&
-      !item.xl_picture_url.includes("Image not found")
-  );
+  const filteredItems = items.slice(0, 20);
 
   const renderRow: ListRenderItem<Listing> = ({ item }) => (
     <Link href={`/listing/${item.id}`} asChild>
