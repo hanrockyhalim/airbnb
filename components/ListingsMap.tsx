@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { defaultStyles } from "@/constants/Styles";
 import * as Location from "expo-location";
-import { Listing } from "@/interfaces/listing";
+import { ListingGeo } from "@/interfaces/listingGeo";
 
 interface Props {
   listings: any;
@@ -31,11 +31,26 @@ const ListingsMap = ({ listings }: Props) => {
           );
         }}
       >
-        {/* {listings.features.map((item: Listing) => (
-        <Marker coordinate={{
-            latitude:
-        }}
-      ))} */}
+        <Marker
+          key={`cluster-${id}`}
+          coordinate={{
+            longitude: geometry.coordinates[0],
+            latitude: geometry.coordinates[1],
+          }}
+          onPress={onPress}
+        >
+          <View style={styles.marker}>
+            <Text
+              style={{
+                color: "#000",
+                textAlign: "center",
+                fontFamily: "mon-sb",
+              }}
+            >
+              {points}
+            </Text>
+          </View>
+        </Marker>
       </MapView>
     </View>
   );
