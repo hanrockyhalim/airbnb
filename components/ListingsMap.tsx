@@ -31,7 +31,7 @@ const ListingsMap = ({ listings }: Props) => {
           );
         }}
       >
-        <Marker
+        {/* <Marker
           key={`cluster-${id}`}
           coordinate={{
             longitude: geometry.coordinates[0],
@@ -50,7 +50,7 @@ const ListingsMap = ({ listings }: Props) => {
               {points}
             </Text>
           </View>
-        </Marker>
+        </Marker> */}
       </MapView>
     </View>
   );
