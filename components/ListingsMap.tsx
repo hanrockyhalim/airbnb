@@ -1,11 +1,10 @@
 import { View, Text, StyleSheet, PermissionsAndroid } from "react-native";
-import React, { useEffect } from "react";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { useEffect } from "react";
+import { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { defaultStyles } from "@/constants/Styles";
-import * as Location from "expo-location";
-import { ListingGeo } from "@/interfaces/listingGeo";
 import { Listing } from "@/interfaces/listing";
 import { useRouter } from "expo-router";
+import MapView from "react-native-map-clustering";
 
 interface Props {
   listings: any;
@@ -21,24 +20,33 @@ const INITIAL_REGION = {
 const ListingsMap = ({ listings }: Props) => {
   const router = useRouter();
 
+  const filteredItems = listings.slice(0, 100);
+  const imageItems = filteredItems.filter(
+    (item: any) => item.xl_picture_url !== null
+  );
+
   const onMarkerSelected = (item: Listing) => {
     router.push(`/listing/${item.id}`);
   };
   return (
     <View style={defaultStyles.container}>
       <MapView
+        animationEnabled={false}
         style={StyleSheet.absoluteFill}
         provider={PROVIDER_GOOGLE}
         initialRegion={INITIAL_REGION}
         showsUserLocation
         showsMyLocationButton
+        clusterColor="#fff"
+        clusterTextColor="#000"
+        clusterFontFamily="mon-sb"
         onMapReady={() => {
           PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
           );
         }}
       >
-        {listings.features.map((item: Listing) => (
+        {imageItems.map((item: Listing) => (
           <Marker
             onPress={() => onMarkerSelected(item)}
             key={item.id}

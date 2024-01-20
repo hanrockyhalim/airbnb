@@ -30,7 +30,10 @@ const Listings = ({ listings: items, category }: Props) => {
     }, 200);
   }, [category]);
 
-  const filteredItems = items.slice(0, 20);
+  const filteredItems = items.slice(0, 40);
+  const imageItems = filteredItems.filter(
+    (item) => item.xl_picture_url !== null
+  );
 
   const renderRow: ListRenderItem<Listing> = ({ item }) => (
     <Link href={`/listing/${item.id}`} asChild>
@@ -85,7 +88,7 @@ const Listings = ({ listings: items, category }: Props) => {
       <FlatList
         renderItem={renderRow}
         ref={listRef}
-        data={loading ? [] : filteredItems}
+        data={loading ? [] : imageItems}
       />
     </View>
   );
