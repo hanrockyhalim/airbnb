@@ -4,6 +4,8 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { defaultStyles } from "@/constants/Styles";
 import * as Location from "expo-location";
 import { ListingGeo } from "@/interfaces/listingGeo";
+import { Listing } from "@/interfaces/listing";
+import { useRouter } from "expo-router";
 
 interface Props {
   listings: any;
@@ -17,6 +19,11 @@ const INITIAL_REGION = {
 };
 
 const ListingsMap = ({ listings }: Props) => {
+  const router = useRouter();
+
+  const onMarkerSelected = (item: Listing) => {
+    router.push(`/listing/${item.id}`);
+  };
   return (
     <View style={defaultStyles.container}>
       <MapView
@@ -31,26 +38,20 @@ const ListingsMap = ({ listings }: Props) => {
           );
         }}
       >
-        {/* <Marker
-          key={`cluster-${id}`}
-          coordinate={{
-            longitude: geometry.coordinates[0],
-            latitude: geometry.coordinates[1],
-          }}
-          onPress={onPress}
-        >
-          <View style={styles.marker}>
-            <Text
-              style={{
-                color: "#000",
-                textAlign: "center",
-                fontFamily: "mon-sb",
-              }}
-            >
-              {points}
-            </Text>
-          </View>
-        </Marker> */}
+        {listings.features.map((item: Listing) => (
+          <Marker
+            onPress={() => onMarkerSelected(item)}
+            key={item.id}
+            coordinate={{
+              latitude: +item.latitude,
+              longitude: +item.longitude,
+            }}
+          >
+            <View style={styles.marker}>
+              <Text style={styles.markerText}>$ {item.price}</Text>
+            </View>
+          </Marker>
+        ))}
       </MapView>
     </View>
   );
