@@ -20,7 +20,7 @@ const INITIAL_REGION = {
 const ListingsMap = ({ listings }: Props) => {
   const router = useRouter();
 
-  const filteredItems = listings.slice(0, 100);
+  const filteredItems = listings.slice(0, 50);
   const imageItems = filteredItems.filter(
     (item: any) => item.xl_picture_url !== null
   );
