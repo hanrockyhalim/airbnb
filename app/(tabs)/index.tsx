@@ -23,6 +23,7 @@ const Page = () => {
           header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
         }}
       />
+
       {/* <Listings listings={items} category={category} /> */}
       <ListingsMap listings={items} />
       <ListingsBottomSheet listings={items} category={category} />
