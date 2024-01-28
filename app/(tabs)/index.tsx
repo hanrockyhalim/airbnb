@@ -1,12 +1,10 @@
-import { View, Text, AppRegistry } from "react-native";
+import { View } from "react-native";
 import React, { useMemo, useState } from "react";
-import { Link, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import ExploreHeader from "@/components/ExploreHeader";
-import Listings from "@/components/Listings";
 import listingsData from "@/assets/data/airbnb-listings.json";
 import ListingsMap from "@/components/ListingsMap";
 import ListingsBottomSheet from "@/components/ListingsBottomSheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const Page = () => {
   const [category, setCategory] = useState("Tiny homes");
@@ -23,7 +21,6 @@ const Page = () => {
           header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
         }}
       />
-
       {/* <Listings listings={items} category={category} /> */}
       <ListingsMap listings={items} />
       <ListingsBottomSheet listings={items} category={category} />
