@@ -13,7 +13,7 @@ const ModalHeaderText = () => {
         width: "85%",
       }}
     >
-      <TouchableOpacity onPress={() => setActive(0)}>
+      {/* <TouchableOpacity onPress={() => setActive(0)}>
         <Text
           style={{
             fontFamily: "mon-sb",
@@ -36,7 +36,7 @@ const ModalHeaderText = () => {
         >
           Experiences
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
